@@ -72,6 +72,14 @@ The above command works for mongoimport versions which were bundled with MongoDB
 
 The advantage of loading this data into a MongoDB collection is that you can then perform aggregation queries on the collection using the db.collection.aggregate() utility of MongoDB. You can also index the collection as you prefer.
 
+#### Notes About Differences in Branches
+
+Repository branch 'master' is the original code from the forked repository. As of this writing, it has not been altered.
+
+Repository branch 'mongodbv4' was tested on a Ubuntu version 18.04.3 LTS server running MongoDB Enterprise version 4.0.13. The reformatting code worked acceptably with the mongoimport version for 4.0.13, but it did not append a newline character at the end of each output record. It did not appear to be necessary.
+
+Repository branch 'issue1' changes the reformatting code. It appends a newline character at the end of each output record.
+ 
 #### Notes for MongoDB version 4.2.x
 
 The reformat_fec_data_to_json.js code does not parse the input transaction date field into the number of milliseconds since epoch. mongoimport versions r4.2.x expect a NumberLong value representing milliseconds since epoch. Otherwise mongoimport will give an unhelpful error message with no explanation of what it is expecting. The workaround is to add the --legacy option to the mongoimport command:
