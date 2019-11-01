@@ -35,7 +35,7 @@ const rl = readline.createInterface({
 
 // Create a writeStream so we can write the reformatted output to a file 
 
-const writeStream = fs.createWriteStream( "./reformatted/test1.json", { encoding: "utf8"} );
+const writeStream = fs.createWriteStream( "./reformatted/test2.json", { encoding: "utf8"} );
 
 // Split and save the first line -- treat that as the header line.
 
@@ -123,12 +123,12 @@ rl.on('line', (line) => {
 		} 
 
 		/* The 20th index value is the final field to be reformatted. We want to close the
-		 * string with a valid JSON closing brace.
+		 * string with a valid JSON closing brace and a newline character.
                  */
 
 		else if (i === 20) {
 
-		jstring = jstring + "\"" + myHdr[i] + "\" : " + "\"" + myTrans[i] + "\"" + " \}"
+		jstring = jstring + "\"" + myHdr[i] + "\" : " + "\"" + myTrans[i] + "\"" + " \}\n"
 
 		} else {
 
