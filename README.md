@@ -48,7 +48,9 @@ The header file is in comma separated values format, using actual commas ',' as 
 
 `sed 's/\,/\|/g' < indiv_header_file.csv > test1.csv`
 
-You must append individual contribution records to this test1.csv file. For testing purposes, use egrep to extract records of interest, such as contributors employed by particular companies.
+The input indiv_header_file.csv was produced on a Microsoft Windows platform, and it therefore has a line termination of '\r\n' (a carriage return character followed by a line feed.) The test1.csv output file will also contain this Windows-based line terminator. On a Linux/Unix platform, you should process this through the 'dos2unix' utility to convert the Microsoft termination to standard Unix line termination.
+
+After doing the above, you must append individual contribution records to this test1.csv file. For testing purposes, use egrep to extract records of interest, such as contributors employed by particular companies.
 
 `egrep 'PFIZER' itcont_2018_20181228_52010302.txt >> test1.csv`
     
@@ -66,8 +68,24 @@ You can then import this reformatted data into a MongoDB version 4.x collection 
 
 `mongoimport --db fecdata --collection t1 --file reformatted/test1.json`
 
+The above command works for mongoimport versions which were bundled with MongoDB versions 4.0.x. For mongoimport versions r4.2.x, please see the notes below.
+
 The advantage of loading this data into a MongoDB collection is that you can then perform aggregation queries on the collection using the db.collection.aggregate() utility of MongoDB. You can also index the collection as you prefer.
 
-Contributor BobCochran has only tested the script with 271,237 input records. To test the reformatting, Node.js versions 10.16.3 and 12.3.0 were used. The reformatted data was added to a standalone instance of MongoDB Enterprise server version 4.0.13, running in a Ubuntu version 18.04.3 LTS server.
+#### Notes for MongoDB version 4.2.x
+
+The reformat_fec_data_to_json.js code does not parse the input transaction date field into the number of milliseconds since epoch. mongoimport versions r4.2.x expect a NumberLong value representing milliseconds since epoch. Otherwise mongoimport will give an unhelpful error message with no explanation of what it is expecting. The workaround is to add the --legacy option to the mongoimport command:
+
+`mongoimport --db fecdata --collection t1 --legacy --file reformatted/test1.json`
+
+#### Tested Operating Systems
+
+The database code in the mongodbv4 branch was tested on Ubuntu 18.04.3. The database code in the issue1 branch was tested on Debian 10.1. 
+
+#### Tested Node.js and MongoDB Database Versions
+
+To test the reformatting, Node.js versions 10.16.3 was used and the reformatted data was added to a standalone instance of MongoDB Enterprise server version 4.0.13, running in a Ubuntu version 18.04.3 LTS server.
+
+In addition, reformatting was tested on Node.js version 12.3.0 and the reformatted data was added to a standalone instance of MongoDB Enterprise server version 4.2.1, running in a Debian 10.1 server.
 
 
